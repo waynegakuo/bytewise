@@ -1,4 +1,23 @@
-# Bytewise
+# ByteWise
+
+## About This Codelab
+
+This is a codelab that demonstrates how to build an AI-powered e-commerce application using Angular and Google's Vertex AI. Through this codelab, developers can learn how to implement:
+
+- Integration with Google's Vertex AI and Gemini 2.0 model
+- AI-powered shopping assistant with natural language processing
+- Function calling capabilities to perform actions like retrieving product information and adding items to cart
+- Reactive state management using Angular signals
+- Modern Angular features including standalone components
+
+## About The App
+
+ByteWise is an e-commerce platform that showcases electronic products with an integrated AI shopping assistant. The application features:
+
+- Product catalog with detailed product information
+- AI assistant that can answer questions about products
+- Shopping cart functionality
+- Responsive UI with modern design
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
 

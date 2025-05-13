@@ -1,0 +1,25 @@
+<nav class="bw-desktop-navbar">
+  <div class="bw-left-navbar d-flex align-items-center">
+    <div class="bytewise-logo">
+      <img
+        class="cursor-pointer logo-image"
+        priority
+        ngSrc="/bytewise.svg"
+        height="55"
+        width="175"
+        alt="Bytewise Logo">
+    </div>
+  </div>
+
+  <div class="bw-right-navbar">
+    <div class="cart-container">
+      <div class="cart-icon">
+        <i class="material-icons">shopping_cart</i>
+        <span class="cart-item-count">{{ productService.cartItemCount() }}</span>
+      </div>
+      <span class="btw-cart-total">
+        {{ productService.productCartTotal() | currencyConversion: 'USD' | currency: 'KES ' }}
+      </span>
+    </div>
+  </div>
+</nav>

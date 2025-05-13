@@ -1,0 +1,85 @@
+$text-color: #828282;
+
+.bytewise-logo {
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 8px;
+
+  .logo-image {
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.15));
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+      filter: drop-shadow(0 0 4px rgba(67, 97, 238, 0.3));
+    }
+  }
+}
+.bw-desktop-navbar {
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  transition: all 0.3s ease-in-out;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0 20px;
+  margin: 0 -20px; /* Compensate for body padding */
+  position: relative;
+}
+
+.bw-left-navbar,
+.bw-right-navbar {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.bw-right-navbar {
+  display: flex;
+  align-items: center;
+}
+
+.cart-container {
+  display: flex;
+  align-items: center;
+}
+
+.cart-icon {
+  position: relative;
+  margin-right: 10px;
+  font-size: 20px;
+
+  .material-icons {
+    font-size: 24px;
+    vertical-align: middle;
+  }
+}
+
+.cart-item-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4081;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btw-cart-total {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+@media screen and (max-width: 767.98px) {
+  .bw-desktop-navbar {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px 20px;
+  }
+}

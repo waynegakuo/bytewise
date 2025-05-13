@@ -1,0 +1,27 @@
+<div class="agent-window">
+  <div class="agent-header">
+    <h3>ByteWise Assistant</h3>
+  </div>
+
+  <div class="messages-container">
+    @for (message of messageHistory(); track $index) {
+      <div class="message" [ngClass]="{'user-message': message.isUser, 'agent-message': !message.isUser}">
+        <div class="message-bubble">
+          {{ message.text }}
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="input-container">
+    <input
+      type="text"
+      [(ngModel)]="userInput"
+      placeholder="Ask me about products..."
+      (keyup.enter)="sendMessage()"
+    />
+    <button (click)="sendMessage()">
+      <span class="material-icons">send</span>
+    </button>
+  </div>
+</div>
