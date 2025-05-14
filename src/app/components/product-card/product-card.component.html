@@ -12,7 +12,7 @@
   <div class="product-info">
     <h3 class="product-title">{{ product.title }}</h3>
     <p class="product-price">
-      {{ product.price | currencyConversion: 'USD' | currency: 'KES ' }}
+      {{ product.price | currency: 'KES ': 'symbol' : '1.0-0'}}
     </p>
     @if (product.brand) {
       <p class="product-brand">{{ product.brand }}</p>

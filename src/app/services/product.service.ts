@@ -20,7 +20,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 999.99,
+      price: 129337,
       images: ['/images/products/smartphone.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -39,7 +39,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 249.99,
+      price: 32334,
       images: ['/images/products/headphones.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -58,7 +58,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 349.99,
+      price: 45268,
       images: ['/images/products/smartwatch.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -77,7 +77,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 1499.99,
+      price: 194009,
       images: ['/images/products/laptop.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -96,7 +96,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 129.99,
+      price: 16813,
       images: ['/images/products/speaker.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -115,7 +115,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 799.99,
+      price: 103471,
       images: ['/images/products/camera.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -134,7 +134,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 499.99,
+      price: 64669,
       images: ['/images/products/gaming-console.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
@@ -153,7 +153,7 @@ export class ProductService {
         creationAt: '2023-01-01T00:00:00.000Z',
         updatedAt: '2023-01-01T00:00:00.000Z'
       },
-      price: 699.99,
+      price: 90537,
       images: ['/images/products/tablet.jpg'],
       creationAt: '2023-01-01T00:00:00.000Z',
       updatedAt: '2023-01-01T00:00:00.000Z',
