@@ -196,6 +196,6 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 For learning more about building agentic apps, visit [Building Agentic Apps in Angular & Flutter](https://flutter.dev/events/building-agentic-apps).
 
-![Building Agentic Apps](public\agentic_apps.png)
+![Building Agentic Apps](public/agentic_apps.png)
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
