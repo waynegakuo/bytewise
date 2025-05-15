@@ -187,4 +187,8 @@ export class ProductService {
     });
   }
 
+  clearCart(): void {
+    this.productCart.set([]);
+  }
+
 }

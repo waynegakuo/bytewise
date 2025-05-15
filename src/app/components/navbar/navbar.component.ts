@@ -14,4 +14,8 @@ import { ProductService } from '../../services/product.service';
 })
 export class NavbarComponent {
   productService = inject(ProductService);
+
+  clearCart(): void {
+    this.productService.clearCart();
+  }
 }

@@ -20,6 +20,9 @@
       <span class="btw-cart-total">
         {{ productService.productCartTotal() | currency: 'KES ': 'symbol' : '1.0-0' }}
       </span>
+      @if (productService.cartItemCount() > 0) {
+        <button class="clear-cart-btn" (click)="clearCart()">Clear Cart</button>
+      }
     </div>
   </div>
 </nav>

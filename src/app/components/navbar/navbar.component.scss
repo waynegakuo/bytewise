@@ -76,6 +76,22 @@ $text-color: #828282;
   margin-right: 10px;
 }
 
+.clear-cart-btn {
+  background-color: #ff4081;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken(#ff4081, 10%);
+  }
+}
+
 @media screen and (max-width: 767.98px) {
   .bw-desktop-navbar {
     margin-left: auto;
