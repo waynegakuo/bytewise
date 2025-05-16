@@ -31,6 +31,10 @@ export class AiService {
           description: "Get an array of the products with the name and price of each product.",
         },
         {
+          name: "clearCart",
+          description: "Clear one or more products from the cart."
+        },
+        {
           name: "addToCart",
           description: "Add one or more products to the cart.",
           parameters: Schema.object({
@@ -102,6 +106,19 @@ export class AiService {
             ]);
             break;
           }
+          case "clearCart": {
+            const cartCount = this.getCartCount();
+            const functionResult = this.clearCart();
+            result = await this.chat.sendMessage([
+              {
+                functionResponse: {
+                  name: functionCall.name,
+                  response: {numberOfProductsRemoved: cartCount},
+                }
+              }
+            ]);
+            break;
+          }
           case "addToCart": {
             console.log(functionCall.args);
 
@@ -129,8 +146,16 @@ export class AiService {
     return this.productService.getProducts();
   }
 
-  getTotalNumberOfProducts() {
+  getTotalNumberOfProducts(): number {
     return this.productService.getProducts().length;
+  }
+
+  clearCart() {
+    return this.productService.clearCart();
+  }
+
+  getCartCount(): number {
+    return this.productService.cartItemCount();
   }
 
   addToCart(products: Product[]) {
