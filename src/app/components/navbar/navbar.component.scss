@@ -8,6 +8,7 @@ $text-color: #828282;
   .logo-image {
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.15));
     transition: all 0.2s ease;
+    cursor: pointer;
 
     &:hover {
       transform: scale(1.02);

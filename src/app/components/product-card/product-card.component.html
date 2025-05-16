@@ -1,25 +1,27 @@
 <div class="product-card">
-  <div class="product-image">
-    <img
-      [ngSrc]="product.images[0]"
-      [alt]="product.title"
-      width="220"
-      height="220"
-      priority
-      onerror="this.src = 'https://placehold.co/600x400'"
-    />
-  </div>
-  <div class="product-info">
-    <h3 class="product-title">{{ product.title }}</h3>
-    <p class="product-price">
-      {{ product.price | currency: 'KES ': 'symbol' : '1.0-0'}}
-    </p>
-    @if (product.brand) {
-      <p class="product-brand">{{ product.brand }}</p>
-    }
-    <p class="product-description">
-      {{ product.description.length > 70 ? (product.description | slice:0:70) + '...' : product.description }}
-    </p>
-    <button class="add-to-cart-btn" (click)="onAddToCartClicked(product)">Add to Cart</button>
-  </div>
+  <a [routerLink]="['/product', product.slug]" class="product-link">
+    <div class="product-image">
+      <img
+        [ngSrc]="product.images[0]"
+        [alt]="product.title"
+        width="220"
+        height="220"
+        priority
+        onerror="this.src = 'https://placehold.co/600x400'"
+      />
+    </div>
+    <div class="product-info">
+      <h3 class="product-title">{{ product.title }}</h3>
+      <p class="product-price">
+        {{ product.price | currency: 'KES ': 'symbol' : '1.0-0'}}
+      </p>
+      @if (product.brand) {
+        <p class="product-brand">{{ product.brand }}</p>
+      }
+      <p class="product-description">
+        {{ product.description.length > 70 ? (product.description | slice:0:70) + '...' : product.description }}
+      </p>
+      <button class="add-to-cart-btn" (click)="$event.stopPropagation(); onAddToCartClicked(product)">Add to Cart</button>
+    </div>
+  </a>
 </div>

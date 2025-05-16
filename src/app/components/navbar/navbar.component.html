@@ -2,7 +2,8 @@
   <div class="bw-left-navbar d-flex align-items-center">
     <div class="bytewise-logo">
       <img
-        class="cursor-pointer logo-image"
+        (click)="onLogoClicked()"
+        class="logo-image"
         priority
         ngSrc="/bytewise.svg"
         height="55"

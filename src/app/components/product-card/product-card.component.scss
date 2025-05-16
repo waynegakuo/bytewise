@@ -14,6 +14,14 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
 
+  .product-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
   .product-image {
     height: 200px;
     overflow: hidden;

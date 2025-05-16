@@ -3,20 +3,5 @@
 </header>
 
 <main>
-  <div class="main-container">
-    <section class="products-section">
-      <div class="bw-product-listing-container">
-        <h2 class="section-title">Featured Products</h2>
-        <div class="products-grid">
-          @for (product of products; track product.id) {
-            <app-product-card [product]="product"></app-product-card>
-          }
-        </div>
-      </div>
-    </section>
-
-    <section class="agent-section">
-      <app-agent-window></app-agent-window>
-    </section>
-  </div>
+  <router-outlet></router-outlet>
 </main>
