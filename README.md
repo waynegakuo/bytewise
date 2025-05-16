@@ -60,14 +60,14 @@ Open your terminal or command prompt and navigate to the directory where you wan
 
 ```bash
 # Clone using HTTPS
-git clone https://github.com/angular/examples.git
+git clone https://github.com/waynegakuo/bytewise.git
 ```
 
 Alternatively, if you have configured SSH keys for GitHub, you can use:
 
 ```bash
 # Clone using SSH
-git clone git@github.com:angular/examples.git
+git clone git@github.com:waynegakuo/bytewise.git
 ```
 
 ### Navigating to the Project and Installing Dependencies 📁
