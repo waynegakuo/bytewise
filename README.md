@@ -2,9 +2,9 @@
 
 ## About This Codelab
 
-This is a codelab that demonstrates how to build an AI-powered e-commerce application using Angular and Google's Vertex AI. Through this codelab, developers can learn how to implement:
+This is a codelab that demonstrates how to build an AI-powered e-commerce application using Angular and Google's Firebase AI Logic. Through this codelab, developers can learn how to implement:
 
-- Integration with Google's Vertex AI and Gemini 2.0 model
+- Integration with Google's Firebase AI Logic and Gemini 2.0 model
 - AI-powered shopping assistant with natural language processing
 - Function calling capabilities to perform actions like retrieving product information and adding items to cart
 - Reactive state management using Angular signals
@@ -21,13 +21,13 @@ ByteWise is an e-commerce platform that showcases electronic products with an in
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
 
-## Setting Up Your Angular Project for Vertex AI in Firebase 🚀
+## Setting Up Your Angular Project for Firebase AI Logic 🚀
 
-This guide will walk you through the initial setup required to run the Angular example that demonstrates the integration of Vertex AI within a Firebase project.
+This guide will walk you through the initial setup required to run the Angular example that demonstrates the integration of Firebase AI Logic within a Firebase project.
 
 ### Understanding the Architecture 🏗️
 
-In this example, Angular serves as the front-end framework, providing the user interface for interacting with our tech gadget inventory. We leverage the AngularFire library to seamlessly connect this Angular application to your Firebase project. The exciting part is Vertex AI in Firebase, which allows us to tap into powerful AI models directly from our Firebase backend. This enables features like intelligent chat sessions and the use of tools that empower the AI agent to perform actions (such as accessing inventory details).
+In this example, Angular serves as the front-end framework, providing the user interface for interacting with our tech gadget inventory. We leverage the AngularFire library to seamlessly connect this Angular application to your Firebase project. The exciting part is Firebase AI Logic, which allows us to tap into powerful AI models directly from our Firebase backend. This enables features like intelligent chat sessions and the use of tools that empower the AI agent to perform actions (such as accessing inventory details).
 
 ### Prerequisites ✅
 
@@ -46,9 +46,9 @@ Before we begin, ensure you have the following installed on your machine:
   yarn global add @angular/cli
   ```
 
-### Firebase Project and Vertex AI Setup 🔥
+### Firebase Project and Firebase AI Logic Setup 🔥
 
-Next, you'll need a Firebase project with a web application configured. You will also need to enable Vertex AI on your Firebase project.
+Next, you'll need a Firebase project with a web application configured. You will also need to enable Firebase AI Logic on your Firebase project.
 
 Follow the directions in [Step 1 to create a project and a web app](https://firebase.google.com/docs/vertex-ai/get-started?platform=web). You do not need to add any SDK code snippets during this step, as this example project already includes them.
 
@@ -124,9 +124,9 @@ Once the app is running, you can interact with the shopping agent by asking ques
 - What items are in stock?
 - What is the most expensive item?
 
-### How the Application Integrates with Vertex AI 🧠
+### How the Application Integrates with Firebase AI Logic 🧠
 
-The core logic for interacting with the Vertex AI in Firebase API resides in the `src/app/services/ai.service.ts` file. You'll find the initialization of the Vertex AI service there:
+The core logic for interacting with the Firebase AI Logic API resides in the `src/app/services/ai.service.ts` file. You'll find the initialization of the Firebase AI Logic service there:
 
 ```typescript
 import { getVertexAI } from 'firebase/vertexai';
@@ -139,7 +139,7 @@ This example showcases how to provide the AI agent with access to custom tools. 
 
 For a deeper understanding of the application's structure and how the UI interacts with the AI service, explore the code.
 
-You're now all set to explore this Angular application integrated with Vertex AI in Firebase! This example provides a solid foundation for understanding how to build interactive and intelligent web applications. 🎉
+You're now all set to explore this Angular application integrated with Firebase AI Logic! This example provides a solid foundation for understanding how to build interactive and intelligent web applications. 🎉
 
 ## Development server
 
@@ -196,7 +196,7 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 For learning more about building agentic apps, visit [Building Agentic Apps in Angular & Flutter](https://flutter.dev/events/building-agentic-apps).
 
-Learn more about [Firebase in Vertex AI](https://firebase.google.com/docs/vertex-ai)
+Learn more about [Firebase AI Logic](https://firebase.google.com/docs/vertex-ai)
 
 Learn more about [building with Gemini](https://firebase.google.com/docs/studio/build-gemini-api-app)
 
