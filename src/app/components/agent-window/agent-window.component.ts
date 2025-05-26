@@ -22,6 +22,7 @@ export class AgentWindowComponent {
   readonly productList = signal<Product[]>([]);
 
   userInput: string = '';
+  isOpen = signal<boolean>(false);
 
   constructor() {
     this.productList.set(this.productService.getProducts());
@@ -44,5 +45,9 @@ export class AgentWindowComponent {
       ...history,
       { isUser: false, text: response }
     ])
+  }
+
+  toggleWindow(): void {
+    this.isOpen.update(value => !value);
   }
 }

@@ -1,10 +1,7 @@
-import {Component, inject} from '@angular/core';
+import {Component} from '@angular/core';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { ProductCardComponent } from './components/product-card/product-card.component';
 import { AgentWindowComponent } from './components/agent-window/agent-window.component';
-import {ProductService} from './services/product.service';
-import {Router, RouterOutlet} from '@angular/router';
-import {NgIf} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +9,7 @@ import {NgIf} from '@angular/common';
   imports: [
     NavbarComponent,
     RouterOutlet,
+    AgentWindowComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

@@ -1,16 +1,14 @@
-<div class="main-container" *ngIf="router.url === '/' || router.url === ''">
-  <section class="products-section">
-    <div class="bw-product-listing-container">
-      <h2 class="section-title">Featured Products</h2>
-      <div class="products-grid">
-        @for (product of products; track product.id) {
-          <app-product-card [product]="product"></app-product-card>
-        }
+@if (router.url === '/' || router.url === '') {
+  <div class="main-container">
+    <section class="products-section">
+      <div class="bw-product-listing-container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="products-grid">
+          @for (product of products; track product.id) {
+            <app-product-card [product]="product"></app-product-card>
+          }
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section class="agent-section">
-    <app-agent-window></app-agent-window>
-  </section>
-</div>
+    </section>
+  </div>
+}

@@ -1,41 +1,43 @@
-<div class="product-details-container" *ngIf="product">
-  <div class="product-details-card">
-    <div class="product-image-container">
-      <img
-        [ngSrc]="product.images[0]"
-        [alt]="product.title"
-        width="400"
-        height="400"
-        priority
-        onerror="this.src = 'https://placehold.co/600x400'"
-      />
-    </div>
-    <div class="product-info-container">
-      <h1 class="product-title">{{ product.title }}</h1>
-
-      <div class="product-meta">
-        @if (product.brand) {
-          <p class="product-brand">{{ product.brand }}</p>
-        }
-        <p class="product-category">{{ product.category.name }}</p>
+@if (product) {
+  <div class="product-details-container">
+    <div class="product-details-card">
+      <div class="product-image-container">
+        <img
+          [ngSrc]="product.images[0]"
+          [alt]="product.title"
+          width="400"
+          height="400"
+          priority
+          onerror="this.src = 'https://placehold.co/600x400'"
+        />
       </div>
+      <div class="product-info-container">
+        <h1 class="product-title">{{ product.title }}</h1>
 
-      <p class="product-price">
-        {{ product.price | currency: 'KES ': 'symbol' : '1.0-0'}}
-      </p>
+        <div class="product-meta">
+          @if (product.brand) {
+            <p class="product-brand">{{ product.brand }}</p>
+          }
+          <p class="product-category">{{ product.category.name }}</p>
+        </div>
 
-      <div class="product-description">
-        <h3>Description</h3>
-        <p>{{ product.description }}</p>
+        <p class="product-price">
+          {{ product.price | currency: 'KES ': 'symbol' : '1.0-0'}}
+        </p>
+
+        <div class="product-description">
+          <h3>Description</h3>
+          <p>{{ product.description }}</p>
+        </div>
+
+        <button class="add-to-cart-btn" (click)="onAddToCartClicked(product)">Add to Cart</button>
       </div>
-
-      <button class="add-to-cart-btn" (click)="onAddToCartClicked(product)">Add to Cart</button>
     </div>
   </div>
-</div>
-
-<div class="product-not-found" *ngIf="!product">
-  <h2>Product not found</h2>
-  <p>Sorry, the product you're looking for doesn't exist or has been removed.</p>
-  <a routerLink="/">Return to Home</a>
-</div>
+} @else {
+  <div class="product-not-found">
+    <h2>Product not found</h2>
+    <p>Sorry, the product you're looking for doesn't exist or has been removed.</p>
+    <a routerLink="/">Return to Home</a>
+  </div>
+}
