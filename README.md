@@ -29,7 +29,27 @@ This guide will walk you through the initial setup required to run the Angular e
 
 In this example, Angular serves as the front-end framework, providing the user interface for interacting with our tech gadget inventory. We leverage the AngularFire library to seamlessly connect this Angular application to your Firebase project. The exciting part is Firebase AI Logic, which allows us to tap into powerful AI models directly from our Firebase backend. This enables features like intelligent chat sessions and the use of tools that empower the AI agent to perform actions (such as accessing inventory details).
 
-### Prerequisites ✅
+### Try it out in Firebase Studio 🧪
+
+Click this button to launch the project in Firebase Studio and follow the steps below to get started.
+
+<a href="https://studio.firebase.google.com/import?url=https%3A%2F%2Fgithub.com%2Fwaynegakuo%2Fbytewise">
+  <picture>
+    <source
+      media="(prefers-color-scheme: dark)"
+      srcset="https://cdn.firebasestudio.dev/btn/try_dark_32.svg">
+    <source
+      media="(prefers-color-scheme: light)"
+      srcset="https://cdn.firebasestudio.dev/btn/try_light_32.svg">
+    <img
+      height="32"
+      alt="Try in Firebase Studio"
+      src="https://cdn.firebasestudio.dev/btn/try_blue_32.svg">
+  </picture>
+</a>
+
+
+### Setting up Locally: Prerequisites ✅
 
 Before we begin, ensure you have the following installed on your machine:
 
