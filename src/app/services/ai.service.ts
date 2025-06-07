@@ -10,6 +10,8 @@ import {
 } from '@angular/fire/vertexai';
 import {FirebaseApp} from '@angular/fire/app';
 import {Product} from '../models/product.model';
+import { getAI, GoogleAIBackend, VertexAIBackend } from "firebase/ai";
+
 
 @Injectable({
   providedIn: 'root'
@@ -60,12 +62,15 @@ export class AiService {
       ]
     };
 
-    // Initialize Vertex AI Service
-    const vertexAI = getVertexAI(this.firebaseApp);
+    // Initialize Gemini Developer API/Vertex AI Gemini API Service
+    // const geminiAI = getAI(this.firebaseApp, {backend: new GoogleAIBackend()});
+    // const vertexAI = getVertexAI(this.firebaseApp); (old version) - vertex AI is tied to the Pay-as-you-go plan
+    const vertexAI = getAI(this.firebaseApp, {backend: new VertexAIBackend() }); // the new Firebase AI Logic client SDK
     const systemInstruction =
       "Welcome to ByteWise. You are a superstar agent for this ecommerce store. you will assist users by answering questions about the inventory and event being able to add items to the cart. The currency is KES and should precede the numerical price. All price values should be formatted with commas to delineate thousands. For example, instead of '1000', use '1,000'.";
 
     // Initialize the generative model with a model that supports use case
+    // change the AI API to vertexAI in case you want a higher level of performance & reliability
     this.model = getGenerativeModel(vertexAI, {
       model: "gemini-2.0-flash",
       systemInstruction: systemInstruction,
