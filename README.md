@@ -153,10 +153,10 @@ You can also use the voice recognition feature by clicking the microphone button
 The core logic for interacting with the Firebase AI Logic API resides in the `src/app/services/ai.service.ts` file. You'll find the initialization of the Firebase AI Logic service there:
 
 ```typescript
-import { getVertexAI } from 'firebase/vertexai';
+import { getAI, GoogleAIBackend, VertexAIBackend } from "firebase/ai";
 // ... other imports
 
-const vertexAI = getVertexAI(this.firebaseApp);
+const vertexAI = getAI(this.firebaseApp, {backend: new VertexAIBackend() }); // the new Firebase AI Logic client SDK
 ```
 
 This example showcases how to provide the AI agent with access to custom tools. In this case, the agent can utilize functions to access the inventory and add items to a virtual cart. These functions are implemented within the example and passed to the agent through the tools property when calling the getGenerativeModel function.
