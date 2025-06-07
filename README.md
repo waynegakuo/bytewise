@@ -6,6 +6,7 @@ This is a codelab that demonstrates how to build an AI-powered e-commerce applic
 
 - Integration with Google's Firebase AI Logic and Gemini 2.0 model
 - AI-powered shopping assistant with natural language processing
+- Voice recognition for hands-free interaction with the AI assistant
 - Function calling capabilities to perform actions like retrieving product information and adding items to cart
 - Reactive state management using Angular signals
 - Modern Angular features including standalone components
@@ -16,6 +17,7 @@ ByteWise is an e-commerce platform that showcases electronic products with an in
 
 - Product catalog with detailed product information
 - AI assistant that can answer questions about products
+- Voice recognition for hands-free interaction with the AI assistant
 - Shopping cart functionality
 - Responsive UI with modern design
 
@@ -144,6 +146,8 @@ Once the app is running, you can interact with the shopping agent by asking ques
 - What items are in stock?
 - What is the most expensive item?
 
+You can also use the voice recognition feature by clicking the microphone button in the chat interface. When the microphone is active, speak your question clearly, and the application will automatically transcribe your speech and send it to the AI assistant when you finish speaking.
+
 ### How the Application Integrates with Firebase AI Logic 🧠
 
 The core logic for interacting with the Firebase AI Logic API resides in the `src/app/services/ai.service.ts` file. You'll find the initialization of the Firebase AI Logic service there:
@@ -158,6 +162,17 @@ const vertexAI = getVertexAI(this.firebaseApp);
 This example showcases how to provide the AI agent with access to custom tools. In this case, the agent can utilize functions to access the inventory and add items to a virtual cart. These functions are implemented within the example and passed to the agent through the tools property when calling the getGenerativeModel function.
 
 For a deeper understanding of the application's structure and how the UI interacts with the AI service, explore the code.
+
+### Speech Recognition Integration 🎤
+
+The application integrates browser-based speech recognition through the Web Speech API. The implementation is in `src/app/services/speech-recognition.service.ts`, which provides:
+
+- Cross-browser support for speech recognition
+- Real-time transcription of speech to text
+- Reactive state management using RxJS observables
+- Seamless integration with the AI assistant
+
+The speech recognition service is used in the agent window component to enable voice input, allowing users to interact with the AI assistant hands-free. When a user speaks, their speech is transcribed and automatically sent to the AI assistant for processing.
 
 You're now all set to explore this Angular application integrated with Firebase AI Logic! This example provides a solid foundation for understanding how to build interactive and intelligent web applications. 🎉
 
