@@ -135,6 +135,39 @@
   max-width: 80%;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   word-break: break-word;
+
+  &.thinking-animation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    padding: 10px;
+
+    .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #666;
+      margin: 0 3px;
+      opacity: 0.6;
+
+      &:nth-child(1) {
+        animation: dot-animation 1.4s infinite;
+        animation-delay: 0s;
+      }
+
+      &:nth-child(2) {
+        animation: dot-animation 1.4s infinite;
+        animation-delay: 0.2s;
+      }
+
+      &:nth-child(3) {
+        animation: dot-animation 1.4s infinite;
+        animation-delay: 0.4s;
+      }
+    }
+  }
 }
 
 .input-container {
@@ -156,6 +189,39 @@
     }
   }
 
+  .voice-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 10px;
+    position: relative;
+
+    .listening-status {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+      color: #6c757d;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 2px 6px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+      &.listening {
+        color: #dc3545;
+        animation: blink 1.5s infinite;
+      }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  }
+
   button {
     background-color: #4361ee;
     color: white;
@@ -168,7 +234,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
 
     &:hover {
       background-color: #3a56d4;
@@ -176,6 +242,50 @@
 
     .material-icons {
       font-size: 18px;
+    }
+
+    &.mic-button {
+      background-color: #6c757d;
+      position: relative;
+
+      &:hover {
+        background-color: #5a6268;
+      }
+
+      &.listening {
+        background-color: #dc3545;
+        animation: pulse 1.5s infinite;
+
+        &:hover {
+          background-color: #c82333;
+        }
+      }
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+    70% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+  }
+
+  @keyframes dot-animation {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
     }
   }
 }

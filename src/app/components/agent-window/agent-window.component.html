@@ -22,6 +22,15 @@
             </div>
           </div>
         }
+        @if (isThinking()) {
+          <div class="message agent-message">
+            <div class="message-bubble thinking-animation">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+        }
       </div>
 
       <div class="input-container">
@@ -31,6 +40,21 @@
           placeholder="Ask me about products..."
           (keyup.enter)="sendMessage()"
         />
+        <div class="voice-control">
+          <button
+            class="mic-button"
+            (click)="toggleVoiceRecognition()"
+            [ngClass]="{'listening': isListening()}"
+            title="{{ isListening() ? 'Click to stop listening' : 'Click to start listening' }}"
+          >
+            <span class="material-icons">{{ isListening() ? 'mic' : 'mic_none' }}</span>
+          </button>
+          @if (isListening()) {
+            <span class="listening-status listening">Listening...</span>
+          } @else {
+            <span class="listening-status">Click to speak</span>
+          }
+        </div>
         <button (click)="sendMessage()">
           <span class="material-icons">send</span>
         </button>
