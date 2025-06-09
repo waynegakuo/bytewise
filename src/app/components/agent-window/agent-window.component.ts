@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, effect, inject, signal} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import {AiService} from '../../services/ai.service';
@@ -6,7 +6,6 @@ import {ProductService} from '../../services/product.service';
 import {SpeechRecognitionService} from '../../services/speech-recognition.service';
 import {Message} from '../../models/message.model';
 import {Product} from '../../models/product.model';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-agent-window',
@@ -15,7 +14,7 @@ import {Subscription} from 'rxjs';
   templateUrl: './agent-window.component.html',
   styleUrl: './agent-window.component.scss'
 })
-export class AgentWindowComponent implements OnInit, OnDestroy {
+export class AgentWindowComponent {
   private readonly aiService = inject(AiService);
   readonly productService = inject(ProductService);
   private readonly speechService = inject(SpeechRecognitionService);
@@ -29,45 +28,41 @@ export class AgentWindowComponent implements OnInit, OnDestroy {
   isListening = signal<boolean>(false);
   isThinking = signal<boolean>(false);
 
-  private subscriptions: Subscription[] = [];
-
   constructor() {
     this.productList.set(this.productService.getProducts());
-  }
 
-  ngOnInit(): void {
-    this.subscriptions.push(
-      this.speechService.isListening$.subscribe(isListening => {
-        console.log('Speech recognition isListening changed:', isListening);
-        this.isListening.set(isListening);
-      }),
+    // Effect for isListening signal
+    effect(() => {
+      const isListening = this.speechService.isListening();
+      console.log('Speech recognition isListening changed:', isListening);
+      this.isListening.set(isListening);
+    });
 
-      this.speechService.transcript$.subscribe(transcript => {
-        console.log('Transcript:', transcript);
-        console.log('Is listening:', this.isListening());
-        if (transcript && !this.isListening()) {
-          this.userInput = transcript;
-          console.log('User input:', this.userInput);
-          // Auto-send the message if we have a transcript and we're not listening anymore
-          if (this.userInput.trim() !== '') {
-            this.sendMessage();
-          }
+    // Effect for transcript signal
+    effect(() => {
+      const transcript = this.speechService.transcript();
+      console.log('Transcript:', transcript);
+      console.log('Is listening:', this.isListening());
+      if (transcript && !this.isListening()) {
+        this.userInput = transcript;
+        console.log('User input:', this.userInput);
+        // Auto-send the message if we have a transcript and we're not listening anymore
+        if (this.userInput.trim() !== '') {
+          this.sendMessage();
         }
-      }),
+      }
+    });
 
-      this.speechService.error$.subscribe(error => {
-        if (error) {
-          // Only log actual errors, not expected conditions like browser support or server-side rendering
-          if (!error.includes('server environment') && !error.includes('not initialized')) {
-            console.error('Speech recognition error:', error);
-          }
+    // Effect for error signal
+    effect(() => {
+      const error = this.speechService.error();
+      if (error) {
+        // Only log actual errors, not expected conditions like browser support or server-side rendering
+        if (!error.includes('server environment') && !error.includes('not initialized')) {
+          console.error('Speech recognition error:', error);
         }
-      })
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+      }
+    });
   }
 
   async sendMessage(): Promise<void> {
