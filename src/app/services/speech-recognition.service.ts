@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
 
 interface SpeechRecognitionEvent extends Event {
   resultIndex: number;
@@ -27,9 +26,9 @@ interface SpeechRecognitionAlternative {
 })
 export class SpeechRecognitionService {
   private recognition: any;
-  private isListening = new BehaviorSubject<boolean>(false);
-  private transcript = new BehaviorSubject<string>('');
-  private error = new BehaviorSubject<string | null>(null);
+  private _isListening = signal<boolean>(false);
+  private _transcript = signal<string>('');
+  private _error = signal<string | null>(null);
   private finalTranscript: string = '';
 
   constructor() {
@@ -47,8 +46,8 @@ export class SpeechRecognitionService {
 
         this.recognition.onstart = () => {
           console.log('Speech recognition started');
-          this.isListening.next(true);
-          this.error.next(null);
+          this._isListening.set(true);
+          this._error.set(null);
         };
 
         this.recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -71,7 +70,7 @@ export class SpeechRecognitionService {
           // Only emit interim results while listening
           if (!event.results[event.results.length - 1].isFinal) {
             console.log('Interim transcript:', currentTranscript);
-            this.transcript.next(currentTranscript);
+            this._transcript.set(currentTranscript);
           } else {
             // For final results, we'll store it and emit in onend
             console.log('Final transcript detected, storing:', currentTranscript);
@@ -81,24 +80,24 @@ export class SpeechRecognitionService {
 
         this.recognition.onerror = (event: any) => {
           console.log('Speech recognition error:', event.error);
-          this.error.next(event.error);
-          this.isListening.next(false);
+          this._error.set(event.error);
+          this._isListening.set(false);
         };
 
         this.recognition.onend = () => {
           console.log('Speech recognition ended');
           // Set isListening to false first
-          this.isListening.next(false);
+          this._isListening.set(false);
 
           // If we have a final transcript, emit it now that isListening is false
           if (this.finalTranscript) {
             console.log('Emitting final transcript:', this.finalTranscript);
-            this.transcript.next(this.finalTranscript);
+            this._transcript.set(this.finalTranscript);
             this.finalTranscript = ''; // Clear it after emitting
           }
         };
       } else {
-        this.error.next('Speech recognition not supported in this browser');
+        this._error.set('Speech recognition not supported in this browser');
       }
     }
     // We don't emit an error for server-side rendering as it's expected behavior
@@ -108,7 +107,7 @@ export class SpeechRecognitionService {
     console.log('startListening called');
     // Only attempt to start listening if we're in a browser environment and recognition is initialized
     if (typeof window !== 'undefined' && this.recognition) {
-      this.transcript.next('');
+      this._transcript.set('');
       this.finalTranscript = ''; // Clear any stored final transcript
       console.log('Starting speech recognition');
       this.recognition.start();
@@ -129,15 +128,15 @@ export class SpeechRecognitionService {
     }
   }
 
-  get isListening$(): Observable<boolean> {
-    return this.isListening.asObservable();
+  get isListening() {
+    return this._isListening;
   }
 
-  get transcript$(): Observable<string> {
-    return this.transcript.asObservable();
+  get transcript() {
+    return this._transcript;
   }
 
-  get error$(): Observable<string | null> {
-    return this.error.asObservable();
+  get error() {
+    return this._error;
   }
 }
