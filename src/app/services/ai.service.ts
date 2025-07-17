@@ -71,7 +71,7 @@ export class AiService {
     // Initialize the generative model with a model that supports use case
     // change the AI API to vertexAI in case you want a higher level of performance & reliability
     this.model = getGenerativeModel(vertexAI, {
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: systemInstruction,
       tools: [productsToolSet],
     })
