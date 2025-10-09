@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $text-color: #828282;
 
 .bytewise-logo {
@@ -89,7 +91,7 @@ $text-color: #828282;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: darken(#ff4081, 10%);
+    background-color: color.adjust(#ff4081, $lightness: -10%);
   }
 }
 
