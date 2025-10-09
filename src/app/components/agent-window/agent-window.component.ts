@@ -24,7 +24,7 @@ export class AgentWindowComponent {
   readonly productList = signal<Product[]>([]);
 
   userInput: string = '';
-  isOpen = signal<boolean>(false);
+  isOpen = signal<boolean>(true);
   isListening = signal<boolean>(false);
   isThinking = signal<boolean>(false);
 
