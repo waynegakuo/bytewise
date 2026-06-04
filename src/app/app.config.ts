@@ -6,6 +6,8 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
+import { initializeAppCheck, provideAppCheck } from '@angular/fire/app-check';
+import { ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 
 const firebaseApp = initializeApp(environment.firebaseConfig);
 
@@ -15,9 +17,13 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch()),
     provideFirebaseApp(() => firebaseApp),
+    provideAppCheck(() => initializeAppCheck(firebaseApp, {
+      provider: new ReCaptchaEnterpriseProvider('6LdlYAwtAAAAAPnACSivCdffjuNEYYCuo4cWqKv-'),
+      isTokenAutoRefreshEnabled: true
+    })),
     {
       provide: 'FIREBASE_APP',
       useValue: firebaseApp
-    }
+    },
   ]
 };
