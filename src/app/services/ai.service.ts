@@ -1,168 +1,127 @@
-import {Inject, inject, Injectable} from '@angular/core';
-import {ProductService} from './product.service';
+import { inject, Injectable } from '@angular/core';
 import {
-  ChatSession,
-  FunctionDeclarationsTool,
-  GenerativeModel, getGenerativeModel,
-  getVertexAI,
-  ObjectSchemaInterface,
-  Schema
-} from '@angular/fire/vertexai';
-import {FirebaseApp} from '@angular/fire/app';
-import {Product} from '../models/product.model';
-import { getAI, GoogleAIBackend, VertexAIBackend } from "firebase/ai";
+  getGenerativeModel,
+  type ChatSession,
+  type GenerateContentResult,
+} from 'firebase/ai';
+import { FIREBASE_AI } from '../firebase/tokens';
+import { ProductService } from './product.service';
+import {
+  executeShoppingTool,
+  SHOPPING_AGENT_MODEL,
+  SHOPPING_AGENT_SYSTEM_INSTRUCTION,
+  shoppingTools,
+} from './ai.tools';
 
+/**
+ * Caps tool-call round trips in a single user turn.
+ *
+ * Gemini may chain tools (list inventory, then add to cart). Without a cap,
+ * a malformed loop could burn quota. Eight rounds covers the shopping flows
+ * in this demo with headroom.
+ */
+const MAX_TOOL_ROUNDS = 8;
 
+/**
+ * Shopping assistant built on Firebase AI Logic (Gemini) + function calling.
+ *
+ * **How the pieces connect**
+ * 1. {@link provideBytewiseFirebase} initializes App Check (reCAPTCHA
+ *    Enterprise or a debug token) and a Gemini client that sends
+ *    *limited-use* App Check tokens on every request.
+ * 2. This service starts a chat with {@link shoppingTools} so Gemini can
+ *    choose store actions instead of hallucinating stock/cart state.
+ * 3. {@link askAgent} sends the user prompt, runs any tool calls against
+ *    {@link ProductService}, and returns Gemini's final text.
+ *
+ * The UI ({@link AgentWindowComponent}) never talks to Firebase AI directly;
+ * it only calls {@link askAgent}.
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AiService {
   private readonly productService = inject(ProductService);
-  private readonly model: GenerativeModel;
-  private readonly chat: ChatSession;
 
-  constructor(@Inject("FIREBASE_APP") private firebaseApp: FirebaseApp) {
-    const productsToolSet: FunctionDeclarationsTool = {
-      functionDeclarations: [
-        {
-          name: "getTotalNumberOfProducts",
-          description: "Get the total number of products available in the store.",
-        },
-        {
-          name: "getProducts",
-          description: "Get an array of the products with the name and price of each product.",
-        },
-        {
-          name: "clearCart",
-          description: "Clear one or more products from the cart."
-        },
-        {
-          name: "addToCart",
-          description: "Add one or more products to the cart.",
-          parameters: Schema.object({
-            properties: {
-              productsToAdd: Schema.array({
-                items: Schema.object({
-                  description: "A single product with its name and price.",
-                  properties: {
-                    name: Schema.string({
-                      description: "The name of the product.",
-                    }),
-                    price: Schema.number({
-                      description: "The numerical price of the product.",
-                    }),
-                  },
-                  // Specify which properties within each product object are required
-                  required: ["name", "price"],
-                }),
-              }),
-            },
-          }) as ObjectSchemaInterface,
-        },
-      ]
-    };
+  /**
+   * Gemini client from DI. Resolving this token also initializes App Check
+   * (see `createFirebaseAI` in `firebase.providers.ts`).
+   */
+  private readonly ai = inject(FIREBASE_AI);
 
-    // Initialize Gemini Developer API/Vertex AI Gemini API Service
-    // const geminiAI = getAI(this.firebaseApp, {backend: new GoogleAIBackend()});
-    const vertexAI = getAI(this.firebaseApp, {backend: new VertexAIBackend() }); // the new Firebase AI Logic client SDK
-    const systemInstruction =
-      "Welcome to ByteWise. You are a superstar agent for this ecommerce store. you will assist users by answering questions about the inventory and event being able to add items to the cart. The currency is KES and should precede the numerical price. All price values should be formatted with commas to delineate thousands. For example, instead of '1000', use '1,000'.";
+  /**
+   * Multi-turn chat. Created lazily on the first user message so SSR never
+   * opens a Gemini session.
+   */
+  private chat: ChatSession | null = null;
 
-    // Initialize the generative model with a model that supports use case
-    // change the AI API to vertexAI in case you want a higher level of performance & reliability
-    this.model = getGenerativeModel(vertexAI, {
-      model: "gemini-3.1-flash-lite",
-      systemInstruction: systemInstruction,
-      tools: [productsToolSet],
-    })
-
-    this.chat = this.model.startChat();
-  }
-
-  async askAgent(userPrompt: string) {
-    let result = await this.chat.sendMessage(userPrompt);
-    const functionCalls = result.response.functionCalls();
-
-    if(functionCalls && functionCalls.length > 0) {
-      for (const functionCall of functionCalls) {
-        switch (functionCall.name) {
-          case "getTotalNumberOfProducts": {
-            const functionResult = this.getTotalNumberOfProducts();
-            result = await this.chat.sendMessage([
-              {
-                functionResponse: {
-                  name: functionCall.name,
-                  response: { numberOfItems: functionResult },
-                }
-              }
-            ]);
-            break;
-          }
-          case "getProducts": {
-            const functionResult = this.getProducts();
-            result = await this.chat.sendMessage([
-              {
-                functionResponse: {
-                  name: functionCall.name,
-                  response: { products: functionResult },
-                }
-              }
-            ]);
-            break;
-          }
-          case "clearCart": {
-            const cartCount = this.getCartCount();
-            const functionResult = this.clearCart();
-            result = await this.chat.sendMessage([
-              {
-                functionResponse: {
-                  name: functionCall.name,
-                  response: {numberOfProductsRemoved: cartCount},
-                }
-              }
-            ]);
-            break;
-          }
-          case "addToCart": {
-            console.log(functionCall.args);
-
-            const args = functionCall.args as { productsToAdd: Product[]}
-
-            const functionResult = this.addToCart(args.productsToAdd);
-
-            result = await this.chat.sendMessage([
-              {
-                functionResponse: {
-                  name: functionCall.name,
-                  response: { numberOfProductsAdded: functionResult },
-                },
-              }
-            ]);
-            break;
-          }
-        }
-      }
-    }
+  /**
+   * Sends a user prompt and resolves tool calls until Gemini returns text.
+   *
+   * Function calling is a loop, not a single request:
+   * user text → (optional tool calls → we execute → function responses)* →
+   * assistant text. All tool results from one model turn are sent together
+   * so Gemini sees a complete picture.
+   *
+   * @param userPrompt - Natural-language question or instruction from the UI.
+   * @returns Assistant reply to render in the chat transcript.
+   */
+  async askAgent(userPrompt: string): Promise<string> {
+    const chat = this.getChat();
+    let result = await chat.sendMessage(userPrompt);
+    result = await this.resolveToolCalls(chat, result);
     return result.response.text();
   }
 
-  getProducts() {
-    return this.productService.getProducts();
+  /**
+   * Returns the existing chat, or starts one with the shopping tools attached.
+   *
+   * @returns Live {@link ChatSession} for this browser session.
+   */
+  private getChat(): ChatSession {
+    if (this.chat) {
+      return this.chat;
+    }
+
+    const model = getGenerativeModel(this.ai, {
+      model: SHOPPING_AGENT_MODEL,
+      systemInstruction: SHOPPING_AGENT_SYSTEM_INSTRUCTION,
+      tools: [shoppingTools],
+    });
+
+    this.chat = model.startChat();
+    return this.chat;
   }
 
-  getTotalNumberOfProducts(): number {
-    return this.productService.getProducts().length;
-  }
+  /**
+   * Executes Gemini function calls until the model stops requesting tools.
+   *
+   * @param chat - Session that must receive `functionResponse` parts next.
+   * @param result - Latest model response, which may include `functionCalls()`.
+   * @returns The first response that contains no further tool calls.
+   */
+  private async resolveToolCalls(
+    chat: ChatSession,
+    result: GenerateContentResult,
+  ): Promise<GenerateContentResult> {
+    for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
+      const functionCalls = result.response.functionCalls();
+      if (!functionCalls?.length) {
+        return result;
+      }
 
-  clearCart() {
-    return this.productService.clearCart();
-  }
+      const functionResponses = functionCalls.map((call) => ({
+        functionResponse: {
+          name: call.name,
+          // Gemini 3.x maps results back to the model turn via this id.
+          ...(call.id !== undefined ? { id: call.id } : {}),
+          response: executeShoppingTool(call, this.productService),
+        },
+      }));
 
-  getCartCount(): number {
-    return this.productService.cartItemCount();
-  }
+      result = await chat.sendMessage(functionResponses);
+    }
 
-  addToCart(products: Product[]) {
-    products.forEach(product => this.productService.addToCart(product));
+    return result;
   }
 }

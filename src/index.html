@@ -12,6 +12,12 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+  <!-- App Check debug provider on localhost only (ignored on deployed domains). -->
+  <script>
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    }
+  </script>
   <app-root></app-root>
 </body>
 </html>

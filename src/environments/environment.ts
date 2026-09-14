@@ -1,12 +1,18 @@
-export const environment = {
+import {
+  firebaseConfig,
+  recaptchaEnterpriseSiteKey,
+} from './firebase.config';
+import type { BytewiseEnvironment } from './environment.model';
+
+/**
+ * Production environment. Loaded by default and for `ng build`.
+ *
+ * Production traffic must attest with reCAPTCHA Enterprise. Do not set
+ * `appCheckDebugToken` here — a debug token in a production bundle would let
+ * anyone skip device attestation.
+ */
+export const environment: BytewiseEnvironment = {
   production: true,
-  firebaseConfig: {
-    apiKey: "AIzaSyBivTCXySJQh3r-EAtxjwLQkYEViRcmqzk",
-    authDomain: "bytewise-shop.firebaseapp.com",
-    projectId: "bytewise-shop",
-    storageBucket: "bytewise-shop.firebasestorage.app",
-    messagingSenderId: "70492809529",
-    appId: "1:70492809529:web:d03a0ac3a823355fa220e8",
-    measurementId: "G-4THZCND3FP"
-  }
+  firebaseConfig,
+  recaptchaEnterpriseSiteKey,
 };

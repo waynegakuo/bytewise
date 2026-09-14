@@ -86,8 +86,13 @@ export class AgentWindowComponent {
         ...history,
         { isUser: false, text: response }
       ]);
+    } catch (error) {
+      console.error('[ByteWise] Agent request failed:', error);
+      this.messageHistory.update((history) => [
+        ...history,
+        { isUser: false, text: this.describeAgentError(error) }
+      ]);
     } finally {
-      // Set thinking state to false regardless of success or failure
       this.isThinking.set(false);
     }
   }
@@ -104,6 +109,42 @@ export class AgentWindowComponent {
   stopVoiceRecognition(): void {
     console.log('Stopping voice recognition from component');
     this.speechService.stopListening();
+  }
+
+  /**
+   * Turns Firebase / App Check failures into a short message the shopper can act on.
+   *
+   * Localhost needs a registered debug token; a deployed origin needs the
+   * reCAPTCHA Enterprise site key allowed for that domain.
+   */
+  private describeAgentError(error: unknown): string {
+    const detail = error instanceof Error ? error.message : String(error);
+
+    if (/Role 'function' is not supported/i.test(detail)) {
+      return 'Gemini 3.x no longer accepts the legacy function-calling role. Run npm install (Firebase SDK 12.19.0+), restart ng serve, and try again.';
+    }
+
+    if (/firebaseappcheck\.googleapis\.com.*blocked|ExchangeDebugToken/i.test(detail)) {
+      return 'Your Browser API key is blocking App Check. In Google Cloud → Credentials → Browser key → API restrictions, add "Firebase App Check API" (firebaseappcheck.googleapis.com) alongside "Firebase AI Logic API". Save, wait ~5 minutes, hard refresh.';
+    }
+
+    if (/firebasevertexai\.googleapis\.com.*blocked|requests to this api/i.test(detail)) {
+      return 'Google Cloud is blocking the Firebase AI Logic API for this app\'s API key. In Google Cloud → Credentials → your Browser key → API restrictions, add "Firebase AI Logic API" (firebasevertexai.googleapis.com). If you use HTTP referrer restrictions, include http://localhost:4200/* and http://127.0.0.1:4200/* for local testing.';
+    }
+
+    if (/caller does not have permission/i.test(detail)) {
+      return 'Gemini returned 403 "The caller does not have permission". Run Firebase Console → AI Services → AI Logic → Get started → Gemini Developer API (this provisions the backend). Then verify the Firebase AI Logic service agent exists in IAM (service-<project-number>@gcp-sa-firebasevertexai.iam.gserviceaccount.com), and that your Browser key matches Project settings → Your apps. See FIREBASE_SETUP.md and DevTools → "[ByteWise] Localhost Firebase diagnostics".';
+    }
+
+    if (/must enforce firebase app check|deactivated in this project/i.test(detail)) {
+      return 'Firebase AI Logic requires App Check. On localhost: register the App Check debug token from DevTools (not reCAPTCHA domains). Firebase Console → App Check → your web app → Manage debug tokens, then hard-refresh.';
+    }
+
+    if (/app check|403|permission_denied|unauthenticated/i.test(detail)) {
+      return 'Gemini rejected this request (403). On localhost, reCAPTCHA domains do not apply — register the App Check debug token from DevTools → Console, then hard-refresh. Also verify Firebase Console → App Check → Firebase AI Logic is enforced and your debug token is listed.';
+    }
+
+    return 'Sorry, I could not complete that request. Please try again.';
   }
 
   toggleVoiceRecognition(): void {
