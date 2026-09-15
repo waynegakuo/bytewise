@@ -144,25 +144,25 @@ const firebaseApp = initializeApp(environment.firebaseConfig);
 
 Using a single instance matters: App Check tokens are registered on this app; `getAI()` must use the **same** app or Gemini requests go out without attestation.
 
-`provideBytewiseFirebase()` registers four providers:
+`provideBytewiseFirebase()` registers three injection tokens (no `@angular/fire`):
 
 | Provider | What it does |
 |----------|----------------|
-| `provideFirebaseApp(() => firebaseApp)` | AngularFire knows the app |
-| `provideAppCheck(...)` | Calls `initializeBytewiseAppCheck()` |
-| `FIREBASE_APP` | Typed token for the app instance |
-| `FIREBASE_AI` | Factory `createFirebaseAI()` → `getAI()` |
+| `FIREBASE_APP` | The shared `FirebaseApp` instance |
+| `FIREBASE_APP_CHECK` | Factory → `initializeBytewiseAppCheck()` |
+| `FIREBASE_AI` | Factory → `getAI()` after App Check is ready |
 
-**`createFirebaseAI()`** (important details):
+**`FIREBASE_AI` factory** (important details):
 
 ```typescript
-function createFirebaseAI(): AI {
-  inject(AppCheck); // forces App Check to init before getAI
-
-  return getAI(firebaseApp, {
-    backend: new GoogleAIBackend(),           // Gemini Developer API
-    useLimitedUseAppCheckTokens: environment.production, // replay protection in prod
-  });
+{
+  provide: FIREBASE_AI,
+  useFactory: (_appCheck: AppCheck) =>
+    getAI(firebaseApp, {
+      backend: new GoogleAIBackend(),           // Gemini Developer API
+      useLimitedUseAppCheckTokens: environment.production, // replay protection in prod
+    }),
+  deps: [FIREBASE_APP_CHECK], // forces App Check to init before getAI
 }
 ```
 
@@ -390,7 +390,7 @@ src/
             └── agent-window.component.scss
 ```
 
-**Dependencies:** `firebase` ^12.19.0, `@angular/fire` ^19.1.0
+**Dependencies:** `firebase` ^12.19.0 (no `@angular/fire` — direct SDK + Angular DI)
 
 **Related docs in repo:**
 

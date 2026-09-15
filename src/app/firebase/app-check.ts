@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import type { FirebaseApp } from '@angular/fire/app';
+import type { FirebaseApp } from 'firebase/app';
 import {
   CustomProvider,
   getToken,
@@ -13,9 +13,8 @@ import { logFirebaseLocalDiagnostics } from './diagnostics';
 /**
  * Global slot the Firebase App Check SDK reads **before** `initializeAppCheck()`.
  *
- * AngularFire also sets this to `true` in `isDevMode()` / on localhost. We set
- * it ourselves so a persisted debug-token string from the environment wins via
- * nullish assignment (`??=`) inside AngularFire.
+ * Set this before `initializeAppCheck()` on localhost so the SDK uses the debug
+ * provider instead of reCAPTCHA Enterprise (which does not run on localhost).
  *
  * @see https://firebase.google.com/docs/ai-logic/app-check#web
  */
@@ -53,9 +52,9 @@ export function enableAppCheckDebugToken(isBrowser: boolean): void {
  * invisible; users never solve a challenge. Tokens auto-refresh so Gemini
  * calls keep a valid attestation attached.
  *
- * **Browser / `ng serve`:** AngularFire + {@link enableAppCheckDebugToken}
- * switch App Check to the debug provider (reCAPTCHA is not valid on
- * `localhost`). Register the printed token in the Firebase Console.
+ * **Browser / `ng serve`:** {@link enableAppCheckDebugToken} switches App Check
+ * to the debug provider (reCAPTCHA is not valid on `localhost`). Register the
+ * printed token in the Firebase Console.
  *
  * **SSR:** reCAPTCHA cannot run on Node, and the shopping agent never calls
  * Gemini during server render. A `CustomProvider` satisfies the SDK without
