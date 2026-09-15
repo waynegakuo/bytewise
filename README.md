@@ -2,243 +2,280 @@
 
 ## About This Codelab
 
-This is a codelab that demonstrates how to build an AI-powered e-commerce application using Angular and Google's Firebase AI Logic. Through this codelab, developers can learn how to implement:
+This codelab demonstrates how to build an AI-powered e-commerce application using **Angular 19** and **Firebase AI Logic** (Gemini). You will learn:
 
-- Integration with Google's Firebase AI Logic and Gemini 2.0 model
-- AI-powered shopping assistant with natural language processing
-- Voice recognition for hands-free interaction with the AI assistant
-- Function calling capabilities to perform actions like retrieving product information and adding items to cart
-- Reactive state management using Angular signals
-- Modern Angular features including standalone components
+- **Firebase AI Logic** with the `firebase/ai` SDK and **Gemini 3.x** models
+- **App Check** with reCAPTCHA Enterprise (production) and debug tokens (localhost)
+- **Function calling** — Gemini invokes your tools to read inventory and update the cart
+- A **shopping assistant** with natural-language chat and optional voice input
+- **Angular signals**, standalone components, and a DRY Firebase bootstrap
 
 ## About The App
 
-ByteWise is an e-commerce platform that showcases electronic products with an integrated AI shopping assistant. The application features:
+ByteWise is an ecommerce demo for tech gadgets with an integrated AI shopping assistant:
 
-- Product catalog with detailed product information
-- AI assistant that can answer questions about products
-- Voice recognition for hands-free interaction with the AI assistant
-- Shopping cart functionality
-- Responsive UI with modern design
+- Product catalog with detailed product pages
+- AI agent that answers inventory questions and adds items to the cart
+- Voice recognition for hands-free chat (Web Speech API)
+- Shopping cart with reactive state
+- Responsive UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
+Generated with [Angular CLI](https://github.com/angular/angular-cli) 19.2.9. Uses **Firebase JS SDK 12.19.0+** (required for Gemini 3 function calling).
 
-## Setting Up Your Angular Project for Firebase AI Logic 🚀
+---
 
-This guide will walk you through the initial setup required to run the Angular example that demonstrates the integration of Firebase AI Logic within a Firebase project.
+## Codelab: Setting Up Firebase AI Logic
 
-### Understanding the Architecture 🏗️
+### Understanding the Architecture
 
-In this example, Angular serves as the front-end framework, providing the user interface for interacting with our tech gadget inventory. We leverage the AngularFire library to seamlessly connect this Angular application to your Firebase project. The exciting part is Firebase AI Logic, which allows us to tap into powerful AI models directly from our Firebase backend. This enables features like intelligent chat sessions and the use of tools that empower the AI agent to perform actions (such as accessing inventory details).
+Angular provides the UI. **Firebase AI Logic** connects your app to **Gemini** through Google's managed backend (`firebasevertexai.googleapis.com`). **App Check** attests that requests come from your real app before Gemini will respond.
 
-### Try it out in Firebase Studio 🧪
+The AI stack is organized in layers (config → bootstrap → tools → service → UI). For a full walkthrough with diagrams and file references, read:
 
-Click this button to launch the project in Firebase Studio and follow the steps below to get started.
+- **[FIREBASE_AI_ARCHITECTURE.md](./FIREBASE_AI_ARCHITECTURE.md)** — how the code works (start here after setup)
+- **[FIREBASE_SETUP.md](./FIREBASE_SETUP.md)** — Firebase Console checklist for your own project
+
+```text
+Configuration (firebase.config.ts, environments)
+        ↓
+Bootstrap (provideBytewiseFirebase → App Check + getAI)
+        ↓
+Tools (ai.tools.ts — model, system prompt, function declarations)
+        ↓
+Service (ai.service.ts — chat + function-calling loop)
+        ↓
+UI (agent-window.component.ts — calls askAgent())
+```
+
+### Try it in Firebase Studio
 
 <a href="https://studio.firebase.google.com/import?url=https%3A%2F%2Fgithub.com%2Fwaynegakuo%2Fbytewise">
   <picture>
-    <source
-      media="(prefers-color-scheme: dark)"
-      srcset="https://cdn.firebasestudio.dev/btn/try_dark_32.svg">
-    <source
-      media="(prefers-color-scheme: light)"
-      srcset="https://cdn.firebasestudio.dev/btn/try_light_32.svg">
-    <img
-      height="32"
-      alt="Try in Firebase Studio"
-      src="https://cdn.firebasestudio.dev/btn/try_blue_32.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.firebasestudio.dev/btn/try_dark_32.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://cdn.firebasestudio.dev/btn/try_light_32.svg">
+    <img height="32" alt="Try in Firebase Studio" src="https://cdn.firebasestudio.dev/btn/try_blue_32.svg">
   </picture>
 </a>
 
+Then follow the local setup steps below.
 
-### Setting up Locally: Prerequisites ✅
+---
 
-Before we begin, ensure you have the following installed on your machine:
+### Step 1 — Prerequisites
 
-- **Node.js and npm (or yarn)** 📦: Angular relies on Node.js for its development environment and npm (Node Package Manager) or yarn for managing dependencies.
-  - **Installation**: If you haven't already, download and install Node.js from the official website: https://nodejs.org/. npm is typically included with Node.js. You can also choose to install yarn: `npm install --global yarn`.
+Install on your machine:
 
-- **Angular CLI (Command Line Interface)** 🛠️: The Angular CLI is a powerful tool for creating, managing, and building Angular applications.
-  - **Installation**: Open your terminal or command prompt and install the Angular CLI globally:
-  ```bash
-  npm install -g @angular/cli
-  ```
-  or
-  ```bash
-  yarn global add @angular/cli
-  ```
+| Tool | Purpose |
+|------|---------|
+| **Node.js 18+** and **npm** | [nodejs.org](https://nodejs.org/) |
+| **Angular CLI** | `npm install -g @angular/cli` |
+| **Firebase CLI** (optional, for deploy) | `npm install -g firebase-tools` |
 
-### Firebase Project and Firebase AI Logic Setup 🔥
+---
 
-Next, you'll need a Firebase project with a web application configured. You will also need to enable Firebase AI Logic on your Firebase project.
+### Step 2 — Create a Firebase project
 
-Follow the directions in [Step 1 to create a project and a web app](https://firebase.google.com/docs/vertex-ai/get-started?platform=web). You do not need to add any SDK code snippets during this step, as this example project already includes them.
+You need your **own** Firebase project. Follow **[FIREBASE_SETUP.md](./FIREBASE_SETUP.md)** in order:
 
-### Getting the Code 📥
+1. Create a Firebase project (pick a **Project ID** — it becomes your Hosting URL: `https://<project-id>.web.app`)
+2. Register a **Web app** and copy the `firebaseConfig` object
+3. **AI Logic → Get started → Gemini Developer API** (do this early — provisions APIs and the service agent)
+4. Create a **reCAPTCHA Enterprise** site key (score-based) and register it in **App Check**
+5. Restrict your **Browser API key** to **Firebase AI Logic API** + **Firebase App Check API** only (not Generative Language API)
 
-Now, let's obtain the bytewise code from GitHub:
+---
 
-Open your terminal or command prompt and navigate to the directory where you want to store the project. Then, use the following command to clone the repository:
+### Step 3 — Clone the repo and install
 
 ```bash
-# Clone using HTTPS
 git clone https://github.com/waynegakuo/bytewise.git
-```
-
-Alternatively, if you have configured SSH keys for GitHub, you can use:
-
-```bash
-# Clone using SSH
-git clone git@github.com:waynegakuo/bytewise.git
-```
-
-### Navigating to the Project and Installing Dependencies 📁
-
-Once the repository is cloned, navigate into the project directory.
-
-Next, install the necessary dependencies for the project using npm or yarn:
-
-```bash
-# Using npm
+cd bytewise
 npm install
 ```
 
-or
+---
 
-```bash
-# Using yarn
-yarn install
-```
+### Step 4 — Configure credentials
 
-### Configuring Firebase Project Settings ⚙️
+#### 4a. Firebase config
 
-Before running the application, you need to provide your Firebase project credentials. Open the `src/app/environments/environments.ts` file in your code editor and replace the placeholder values within the firebaseConfig object with your actual Firebase project settings. You can find these details in the Firebase Console under your project's settings.
+Open **`src/environments/firebase.config.ts`** and paste your values from Firebase Console → Project settings → Your apps → Web:
 
 ```typescript
-export const environment = {
-  production: false,
-  firebaseConfig: {
-    apiKey: "<your-api-key>",
-    authDomain: "<your-app-domain>",
-    projectId: "<your-project-id>",
-    storageBucket: "<your-storage-bucket-id>",
-    messagingSenderId: "<your-message-sender-id>",
-    appId: "<your-app-id>",
-    measurementId: "<your-measurement-id>"
-  },
+export const firebaseConfig: FirebaseOptions = {
+  apiKey: '...',
+  authDomain: '<project-id>.firebaseapp.com',
+  projectId: '<project-id>',
+  storageBucket: '<project-id>.firebasestorage.app',
+  messagingSenderId: '...',
+  appId: '...',
+  measurementId: '...',
 };
+
+export const recaptchaEnterpriseSiteKey = '...'; // from reCAPTCHA Enterprise (step 2)
 ```
 
-### Running the Application 🏃‍♂️
+#### 4b. Firebase CLI project (for deploy)
 
-With the configuration complete, you can now start the development server:
+Set your project ID in **`.firebaserc`**:
+
+```json
+{
+  "projects": {
+    "default": "<project-id>"
+  }
+}
+```
+
+Development settings (`appCheckDebugToken: true`) live in **`src/environments/environment.development.ts`** — you usually do not need to change this file.
+
+---
+
+### Step 5 — Register the App Check debug token (localhost only)
+
+reCAPTCHA does **not** run on `localhost`. The app uses App Check's **debug provider** instead.
+
+1. Run the app: `ng serve`
+2. Open **http://localhost:4200** and DevTools → **Console**
+3. Find: `AppCheck debug token: "xxxxxxxx-xxxx-..."`
+4. Firebase Console → **App Check** → your **web app** → **Manage debug tokens** → add that UUID
+5. Hard refresh (`Ctrl+Shift+R`)
+
+In the console you should see **`[ByteWise] Gemini generateContent probe: OK`**. These diagnostics run **only in dev** — not in production builds.
+
+---
+
+### Step 6 — Run and explore
 
 ```bash
 ng serve
 ```
 
-This command will build your Angular application and start a local development server. You can then access the application in your web browser at http://localhost:4200.
+Open **http://localhost:4200**. Try the shopping agent:
 
-### Exploring the Application 🔍
+- *What items are in stock?*
+- *How many products do you have?*
+- *Add the cheapest item to my cart.*
 
-Once the app is running, you can interact with the shopping agent by asking questions like:
-- Do you sell shoes here?
-- What items are in stock?
-- What is the most expensive item?
+Use the **microphone** button for voice input (Chrome/Edge recommended).
 
-You can also use the voice recognition feature by clicking the microphone button in the chat interface. When the microphone is active, speak your question clearly, and the application will automatically transcribe your speech and send it to the AI assistant when you finish speaking.
+---
 
-### How the Application Integrates with Firebase AI Logic 🧠
+## What Learners Should Look For in the Code
 
-The core logic for interacting with the Firebase AI Logic API resides in the `src/app/services/ai.service.ts` file. You'll find the initialization of the Firebase AI Logic service there:
+Use this as a guided tour. Read **[FIREBASE_AI_ARCHITECTURE.md](./FIREBASE_AI_ARCHITECTURE.md)** for detail on each layer.
 
-```typescript
-import { getAI, GoogleAIBackend, VertexAIBackend } from "firebase/ai";
-// ... other imports
+### Layer 1 — Configuration
 
-const vertexAI = getAI(this.firebaseApp, {backend: new VertexAIBackend() }); // the new Firebase AI Logic client SDK
-```
+| File | What to notice |
+|------|----------------|
+| `src/environments/firebase.config.ts` | Single source for `firebaseConfig` + reCAPTCHA site key |
+| `src/environments/environment.development.ts` | `appCheckDebugToken: true` for localhost |
+| `src/environments/environment.ts` | Production — no debug token |
+| `src/index.html` | Sets `FIREBASE_APPCHECK_DEBUG_TOKEN` on localhost only |
 
-This example showcases how to provide the AI agent with access to custom tools. In this case, the agent can utilize functions to access the inventory and add items to a virtual cart. These functions are implemented within the example and passed to the agent through the tools property when calling the getGenerativeModel function.
+**Learning goal:** Understand why credentials and App Check mode differ between dev and production.
 
-For a deeper understanding of the application's structure and how the UI interacts with the AI service, explore the code.
+### Layer 2 — Firebase bootstrap
 
-### Speech Recognition Integration 🎤
+| File | What to notice |
+|------|----------------|
+| `src/app/app.config.ts` | Calls `provideBytewiseFirebase()` once |
+| `src/app/firebase/providers.ts` | One `initializeApp`, then App Check, then `getAI()` with `GoogleAIBackend` |
+| `src/app/firebase/app-check.ts` | reCAPTCHA Enterprise vs debug provider vs SSR placeholder |
+| `src/app/firebase/tokens.ts` | `FIREBASE_AI` injection token — services inject this instead of calling `getAI()` directly |
 
-The application integrates browser-based speech recognition through the Web Speech API. The implementation is in `src/app/services/speech-recognition.service.ts`, which provides:
+**Learning goal:** App Check must initialize on the **same** Firebase app instance before any Gemini call. See `inject(AppCheck)` inside `createFirebaseAI()`.
 
-- Cross-browser support for speech recognition
-- Real-time transcription of speech to text
-- Reactive state management using RxJS observables
-- Seamless integration with the AI assistant
+### Layer 3 — Tools and model
 
-The speech recognition service is used in the agent window component to enable voice input, allowing users to interact with the AI assistant hands-free. When a user speaks, their speech is transcribed and automatically sent to the AI assistant for processing.
+| File | What to notice |
+|------|----------------|
+| `src/app/services/ai.tools.ts` | `SHOPPING_AGENT_MODEL`, system instruction, `shoppingTools` declarations, `executeShoppingTool()` |
 
-You're now all set to explore this Angular application integrated with Firebase AI Logic! This example provides a solid foundation for understanding how to build interactive and intelligent web applications. 🎉
+**Learning goal:** Gemini does not run your functions — it returns `functionCall` objects. You execute them and send back `functionResponse` parts.
 
-## Development server
+### Layer 4 — AI service
 
-To start a local development server, run:
+| File | What to notice |
+|------|----------------|
+| `src/app/services/ai.service.ts` | `getGenerativeModel()` + `startChat()`, `askAgent()`, `resolveToolCalls()` loop |
+
+**Learning goal:** Trace one user message: `sendMessage(text)` → optional tool rounds → final `response.text()`.
+
+### Layer 5 — UI
+
+| File | What to notice |
+|------|----------------|
+| `src/app/components/agent-window/agent-window.component.ts` | Calls `aiService.askAgent()` — never imports `firebase/ai` |
+| `src/app/app.component.html` | Hosts `<app-agent-window>` globally |
+
+**Learning goal:** Keep Firebase AI out of components; the service is the boundary.
+
+### Optional — Dev diagnostics
+
+| File | What to notice |
+|------|----------------|
+| `src/app/firebase/diagnostics.ts` | Localhost-only App Check + Gemini probe (skipped when `production: true`) |
+
+---
+
+## Codelab Checklist
+
+Before moving on, confirm you can explain each item:
+
+- [ ] What **AI Logic → Get started** provisions in your Firebase project
+- [ ] Why **App Check** is required for Gemini on the client
+- [ ] Difference between **reCAPTCHA** (production) and **debug tokens** (localhost)
+- [ ] Why the Browser API key allows **Firebase AI Logic** + **App Check** APIs but **not** Generative Language API
+- [ ] Where **`provideBytewiseFirebase()`** fits in the Angular injector
+- [ ] How **`shoppingTools`** connects to **`executeShoppingTool()`**
+- [ ] What happens in **`resolveToolCalls()`** when Gemini asks for inventory
+
+---
+
+## Speech Recognition
+
+Voice input uses the **Web Speech API** in `src/app/services/speech-recognition.service.ts`:
+
+- Cross-browser speech recognition (best in Chrome/Edge)
+- Transcript fed into the same `askAgent()` path as typed messages
+- Independent of Firebase — no extra Firebase setup required
+
+---
+
+## Build, Test, Deploy
 
 ```bash
+# Development
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+# Production build
 ng build
+
+# Deploy to Firebase Hosting (after firebase login + firebase use <project-id>)
+firebase deploy --only hosting
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+For CI/CD, add a GitHub secret `FIREBASE_SERVICE_ACCOUNT_BYTEWISE` with your project's service account JSON (see **FIREBASE_SETUP.md** § GitHub Actions).
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+---
 
 ## Additional Resources
-For learning more about building agentic apps, visit [Building Agentic Apps in Angular & Flutter](https://flutter.dev/events/building-agentic-apps).
 
-Learn more about [Firebase AI Logic](https://firebase.google.com/docs/vertex-ai)
-
-Learn more about [building with Gemini](https://firebase.google.com/docs/studio/build-gemini-api-app)
+| Resource | Link |
+|----------|------|
+| Architecture guide (this repo) | [FIREBASE_AI_ARCHITECTURE.md](./FIREBASE_AI_ARCHITECTURE.md) |
+| Firebase setup guide (this repo) | [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) |
+| Firebase AI Logic docs | [firebase.google.com/docs/ai-logic](https://firebase.google.com/docs/ai-logic) |
+| App Check + AI Logic | [firebase.google.com/docs/ai-logic/app-check](https://firebase.google.com/docs/ai-logic/app-check) |
+| Building agentic apps | [flutter.dev/events/building-agentic-apps](https://flutter.dev/events/building-agentic-apps) |
+| Angular CLI reference | [angular.dev/tools/cli](https://angular.dev/tools/cli) |
 
 ![Building Agentic Apps](public/agentic_apps.png)
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
