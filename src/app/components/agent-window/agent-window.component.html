@@ -30,7 +30,11 @@
       <div class="messages">
         @for (message of messageHistory(); track $index) {
           <div class="message" [class.user]="message.isUser" [class.agent]="!message.isUser">
-            <p class="bubble">{{ message.text }}</p>
+            @if (message.isUser) {
+              <p class="bubble">{{ message.text }}</p>
+            } @else {
+              <div class="bubble markdown" [innerHTML]="message.text | markdown"></div>
+            }
           </div>
         }
         @if (isThinking()) {

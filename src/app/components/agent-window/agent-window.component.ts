@@ -1,6 +1,7 @@
 import {afterNextRender, Component, DestroyRef, effect, inject, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {MarkdownPipe} from '../../pipes/markdown.pipe';
 import {AiService} from '../../services/ai.service';
 import {ProductService} from '../../services/product.service';
 import {SpeechRecognitionService} from '../../services/speech-recognition.service';
@@ -10,7 +11,7 @@ import {Product} from '../../models/product.model';
 @Component({
   selector: 'app-agent-window',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, MarkdownPipe],
   templateUrl: './agent-window.component.html',
   styleUrl: './agent-window.component.scss'
 })
