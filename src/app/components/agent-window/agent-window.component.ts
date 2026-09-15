@@ -1,6 +1,6 @@
-import {Component, effect, inject, signal} from '@angular/core';
+import {afterNextRender, Component, DestroyRef, effect, inject, PLATFORM_ID, signal} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
 import {AiService} from '../../services/ai.service';
 import {ProductService} from '../../services/product.service';
 import {SpeechRecognitionService} from '../../services/speech-recognition.service';
@@ -10,7 +10,7 @@ import {Product} from '../../models/product.model';
 @Component({
   selector: 'app-agent-window',
   standalone: true,
-  imports: [FormsModule, NgClass],
+  imports: [FormsModule],
   templateUrl: './agent-window.component.html',
   styleUrl: './agent-window.component.scss'
 })
@@ -18,18 +18,40 @@ export class AgentWindowComponent {
   private readonly aiService = inject(AiService);
   readonly productService = inject(ProductService);
   private readonly speechService = inject(SpeechRecognitionService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
   readonly messageHistory = signal<Message[]>([
     { text: 'Hello! I\'m your ByteWise AI shopping assistant. How can I help you today?', isUser: false }
   ]);
   readonly productList = signal<Product[]>([]);
 
   userInput: string = '';
-  isOpen = signal<boolean>(true);
+  isOpen = signal<boolean>(false);
   isListening = signal<boolean>(false);
   isThinking = signal<boolean>(false);
 
   constructor() {
     this.productList.set(this.productService.getProducts());
+
+    afterNextRender(() => {
+      if (window.matchMedia('(min-width: 768px)').matches) {
+        this.isOpen.set(true);
+      }
+    });
+
+    effect(() => {
+      const open = this.isOpen();
+      if (!isPlatformBrowser(this.platformId)) {
+        return;
+      }
+      document.body.classList.toggle('assistant-open', open);
+    });
+
+    this.destroyRef.onDestroy(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        document.body.classList.remove('assistant-open');
+      }
+    });
 
     // Effect for isListening signal
     effect(() => {
@@ -63,6 +85,11 @@ export class AgentWindowComponent {
         }
       }
     });
+  }
+
+  onSubmit(event: Event): void {
+    event.preventDefault();
+    void this.sendMessage();
   }
 
   async sendMessage(): Promise<void> {

@@ -1,35 +1,91 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bw-bg: #f3f5fb;
+  --bw-surface: #ffffff;
+  --bw-text: #1c2140;
+  --bw-muted: #5d6580;
+  --bw-primary: #3d4ed7;
+  --bw-primary-hover: #3140b8;
+  --bw-primary-soft: #eef0ff;
+  --bw-accent: #e11d48;
+  --bw-border: #e4e8f4;
+  --bw-shadow: 0 10px 30px rgba(28, 33, 64, 0.08);
+  --bw-radius: 18px;
+  --bw-radius-sm: 12px;
+  --bw-font: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --bw-space: 16px;
+  --bw-header: 72px;
+  --bw-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
-  background-color: rgb(253, 253, 253);
-  margin: 0;
-  font-family: "Architects Daughter", serif;
-  padding: 0 20px;
+  font-family: var(--bw-font);
+  background:
+    radial-gradient(1200px 420px at 10% -10%, rgba(61, 78, 215, 0.08), transparent 55%),
+    var(--bw-bg);
+  color: var(--bw-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
 textarea {
-  height: 200px;
-}
-
-textarea, input {
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 10px;
-  font-size: 14px;
-  resize: none;
-  font-family: "Roboto", serif;
-}
-
-textarea:focus, input:focus {
-  outline: 2px solid #d3c6f6;
+  font-family: inherit;
 }
 
 button {
-  font-size: 16px;
-  margin-bottom: 10px;
-  padding: 15px 20px;
-  border-radius: 8px;
-  border-width: 0;
-  font-family: "Architects Daughter", serif;
-  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+:focus-visible {
+  outline: 2px solid var(--bw-primary);
+  outline-offset: 2px;
+}
+
+body.assistant-open {
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    overflow: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

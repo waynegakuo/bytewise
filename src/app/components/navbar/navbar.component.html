@@ -1,29 +1,32 @@
-<nav class="bw-desktop-navbar">
-  <div class="bw-left-navbar d-flex align-items-center">
-    <div class="bytewise-logo">
-      <img
-        (click)="onLogoClicked()"
-        class="logo-image"
-        priority
-        ngSrc="/bytewise.svg"
-        height="55"
-        width="175"
-        alt="Bytewise Logo">
-    </div>
-  </div>
+<nav class="navbar" aria-label="Store">
+  <a routerLink="/" class="logo" aria-label="ByteWise home">
+    <img
+      class="logo-image"
+      ngSrc="/bytewise.svg"
+      height="40"
+      width="128"
+      priority
+      alt="ByteWise"
+    >
+  </a>
 
-  <div class="bw-right-navbar">
-    <div class="cart-container">
-      <div class="cart-icon">
-        <i class="material-icons">shopping_cart</i>
-        <span class="cart-item-count">{{ productService.cartItemCount() }}</span>
-      </div>
-      <span class="btw-cart-total">
+  <div class="cart">
+    <span class="cart-icon" aria-hidden="true">
+      <i class="material-icons">shopping_cart</i>
+      @if (productService.cartItemCount() > 0) {
+        <span class="cart-badge">{{ productService.cartItemCount() }}</span>
+      }
+    </span>
+
+    @if (productService.cartItemCount() > 0) {
+      <span class="cart-total">
         {{ productService.productCartTotal() | currency: 'KES ': 'symbol' : '1.0-0' }}
       </span>
-      @if (productService.cartItemCount() > 0) {
-        <button class="clear-cart-btn" (click)="clearCart()">Clear Cart</button>
-      }
-    </div>
+      <button type="button" class="clear-cart-btn" (click)="clearCart()">
+        Clear
+      </button>
+    } @else {
+      <span class="cart-empty">Cart empty</span>
+    }
   </div>
 </nav>
