@@ -1,4 +1,4 @@
-import {afterNextRender, Component, DestroyRef, effect, inject, PLATFORM_ID, signal} from '@angular/core';
+import {afterNextRender, afterRenderEffect, Component, DestroyRef, effect, ElementRef, inject, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {MarkdownPipe} from '../../pipes/markdown.pipe';
@@ -21,6 +21,7 @@ export class AgentWindowComponent {
   private readonly speechService = inject(SpeechRecognitionService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject(ElementRef);
   readonly messageHistory = signal<Message[]>([
     { text: 'Hello! I\'m your ByteWise AI shopping assistant. How can I help you today?', isUser: false }
   ]);
@@ -37,6 +38,17 @@ export class AgentWindowComponent {
     afterNextRender(() => {
       if (window.matchMedia('(min-width: 768px)').matches) {
         this.isOpen.set(true);
+      }
+    });
+
+    afterRenderEffect({
+      mixedReadWrite: () => {
+        this.messageHistory();
+        this.isThinking();
+        if (!this.isOpen()) {
+          return;
+        }
+        this.scrollMessagesToBottom();
       }
     });
 
@@ -127,6 +139,14 @@ export class AgentWindowComponent {
 
   toggleWindow(): void {
     this.isOpen.update(value => !value);
+  }
+
+  private scrollMessagesToBottom(): void {
+    const container = this.host.nativeElement.querySelector('.messages') as HTMLElement | null;
+    if (!container) {
+      return;
+    }
+    container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
   }
 
   startVoiceRecognition(): void {
