@@ -82,18 +82,17 @@
 
 .clear-cart-btn {
   margin: 0;
-  padding: 0;
+  padding: 6px 12px;
   border: 0;
-  background: none;
-  color: var(--bw-muted);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  border-radius: 6px;
+  background: var(--bw-accent);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .clear-cart-btn:hover {
-  color: var(--bw-accent);
+  background: color-mix(in srgb, var(--bw-accent) 85%, #000);
 }
 
 @media (max-width: 480px) {

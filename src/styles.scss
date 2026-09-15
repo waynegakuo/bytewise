@@ -11,7 +11,8 @@
   --bw-shadow: 0 10px 30px rgba(28, 33, 64, 0.08);
   --bw-radius: 18px;
   --bw-radius-sm: 12px;
-  --bw-font: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --bw-font: "Architects Daughter", "Segoe UI", system-ui, sans-serif;
+  --bw-font-plain: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
   --bw-space: 16px;
   --bw-header: 72px;
   --bw-safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -56,6 +57,11 @@ button,
 input,
 textarea {
   font-family: inherit;
+}
+
+input,
+textarea {
+  font-family: var(--bw-font-plain);
 }
 
 button {
