@@ -40,3 +40,5 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+FIREBASE_AI_LOGIC_ANGULAR_GUIDE.md
