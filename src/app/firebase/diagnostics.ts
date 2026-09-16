@@ -117,7 +117,7 @@ async function probeGeminiGenerateContent(firebaseApp: FirebaseApp): Promise<voi
           '   If it differs, replace src/environments/firebase.config.ts and hard-refresh.',
           '',
           'C) Google Cloud → Credentials → open the key from step B (not a different key)',
-          '   API restrictions: Firebase AI Logic + Firebase App Check only.',
+          '   API restrictions: confirm Firebase AI Logic + Firebase App Check are in the allowlist (~25 APIs is normal after the wizard).',
           '   Application restrictions: None (for localhost).',
           '',
           'D) DevTools → Network → failed generateContent request → Headers tab:',

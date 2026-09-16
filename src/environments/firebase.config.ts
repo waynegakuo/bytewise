@@ -14,11 +14,15 @@ import type { FirebaseOptions } from 'firebase/app';
 
  *
 
- * **Browser key API restrictions (Google Cloud → Credentials):** allow at least
+ * **Browser key API restrictions (Google Cloud → Credentials):** the AI Logic
 
- * Firebase AI Logic API and Firebase App Check API. Do not add Generative
+ * wizard often pre-enables ~25 APIs on this key. Confirm Firebase AI Logic API
 
- * Language API. Application restrictions can stay "None" for local dev.
+ * and Firebase App Check API are allowed; add them if missing. Do not add raw
+
+ * Gemini API (Generative Language). Application restrictions can stay "None"
+
+ * for local dev.
 
  *
 

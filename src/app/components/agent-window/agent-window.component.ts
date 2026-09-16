@@ -173,11 +173,11 @@ export class AgentWindowComponent {
     }
 
     if (/firebaseappcheck\.googleapis\.com.*blocked|ExchangeDebugToken/i.test(detail)) {
-      return 'Your Browser API key is blocking App Check. In Google Cloud → Credentials → Browser key → API restrictions, add "Firebase App Check API" (firebaseappcheck.googleapis.com) alongside "Firebase AI Logic API". Save, wait ~5 minutes, hard refresh.';
+      return 'Your Browser API key is blocking App Check. In Google Cloud → Credentials → Browser key → API restrictions, confirm "Firebase App Check API" (firebaseappcheck.googleapis.com) and "Firebase AI Logic API" are in the allowlist (add if missing). Save, wait ~5 minutes, hard refresh.';
     }
 
     if (/firebasevertexai\.googleapis\.com.*blocked|requests to this api/i.test(detail)) {
-      return 'Google Cloud is blocking the Firebase AI Logic API for this app\'s API key. In Google Cloud → Credentials → your Browser key → API restrictions, add "Firebase AI Logic API" (firebasevertexai.googleapis.com). If you use HTTP referrer restrictions, include http://localhost:4200/* and http://127.0.0.1:4200/* for local testing.';
+      return 'Google Cloud is blocking the Firebase AI Logic API for this app\'s API key. In Google Cloud → Credentials → your Browser key → API restrictions, confirm "Firebase AI Logic API" (firebasevertexai.googleapis.com) is allowed (add if missing). If you use HTTP referrer restrictions, include http://localhost:4200/* and http://127.0.0.1:4200/* for local testing.';
     }
 
     if (/caller does not have permission/i.test(detail)) {

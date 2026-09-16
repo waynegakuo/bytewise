@@ -355,7 +355,7 @@ The API key **identifies** the project; **authorization** for Gemini goes throug
 | **Local dev** | Debug token registered in Console (not reCAPTCHA on localhost) |
 | **Production** | reCAPTCHA Enterprise site key + domain allowlist |
 | **Replay attacks** | Limited-use App Check tokens in production (`useLimitedUseAppCheckTokens: true`) |
-| **API key in repo** | Expected for client apps; restrict key to AI Logic + App Check APIs only |
+| **API key in repo** | Expected for client apps; Browser key should include AI Logic + App Check APIs (wizard often pre-enables ~25) |
 | **System prompt in bundle** | Visible in client; Firebase recommends server prompt templates for hardening |
 
 ---

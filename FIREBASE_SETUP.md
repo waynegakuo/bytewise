@@ -45,12 +45,22 @@ Use this checklist to connect a **clone of this repo** to **your own** Firebase 
 2. **Get started** → **Gemini Developer API**
 3. Complete the wizard (enables APIs, provisions the service agent, updates the Browser key allowlist)
 
-Wait **5–10 minutes**, then verify in Google Cloud → **APIs & Services** → **Enabled APIs**:
+Wait **5–10 minutes**, then verify in [Google Cloud console](https://console.cloud.google.com/) (select the **same project ID** as Firebase):
 
-- Firebase AI Logic API (`firebasevertexai.googleapis.com`)
-- Gemini Developer API (`generativelanguage.googleapis.com`)
+1. **APIs & Services** → **Enabled APIs & services**
+2. Scroll **past the charts** to the API table
+3. Use **Filter** to confirm both required APIs appear in the list
 
-Console link pattern: `https://console.cloud.google.com/apis/dashboard?project=<project-id>`
+| Filter for | Listed as | Service ID |
+| --- | --- | --- |
+| `Firebase AI Logic` | Firebase AI Logic API | `firebasevertexai.googleapis.com` |
+| `Gemini API` | Gemini API (Firebase wizard: **Gemini Developer API**) | `generativelanguage.googleapis.com` |
+
+When you filter `Gemini`, you may also see **Gemini for Google Cloud API** (`cloudaicompanion.googleapis.com`) — that is for Gemini in the Cloud Console (Code Assist), **not** required for Firebase AI Logic in your web app.
+
+**Alternative:** **APIs & Services** → **Library** → search **Gemini API** / **Firebase AI Logic** → **Manage** = enabled.
+
+Direct links: `https://console.cloud.google.com/apis/library/firebasevertexai.googleapis.com?project=<project-id>` and `https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com?project=<project-id>`
 
 ---
 
@@ -78,10 +88,10 @@ Console link pattern: `https://console.cloud.google.com/apis/dashboard?project=<
 1. Google Cloud → **APIs & Services** → **Credentials**
 2. Open the **Browser key** that matches `apiKey` in your `firebase.config.ts`
 3. **Application restrictions:** **None** while developing on localhost (add HTTP referrers before locking down production)
-4. **API restrictions** → **Restrict key** → add **only**:
-   - Firebase AI Logic API
-   - Firebase App Check API
-5. **Do not** add Generative Language API to this key
+4. **API restrictions:** The **AI Logic → Get started** wizard often pre-populates this key with about **25 APIs already allowed** — that is normal. Open the allowlist and **confirm** these two are included (add them if missing):
+   - **Firebase AI Logic API**
+   - **Firebase App Check API**
+5. You do **not** need to strip the key down to only those two. You also do **not** need to add **Gemini API** (`generativelanguage.googleapis.com`) — Firebase AI Logic routes through `firebasevertexai.googleapis.com`.
 
 Save → wait ~5 minutes for propagation.
 
@@ -134,7 +144,7 @@ Add your Hosting domains to the reCAPTCHA key if you have not already.
 
 | Symptom | Fix |
 |--------|-----|
-| `ExchangeDebugToken` blocked | Add **Firebase App Check API** to the Browser key |
+| `ExchangeDebugToken` blocked | Confirm **Firebase App Check API** is in the Browser key allowlist (add if missing) |
 | `generateContent` 403, caller does not have permission | Run **AI Logic → Get started**; verify `x-goog-api-key` matches Project settings → Your apps |
 | App Check token OK, Gemini still fails | Register debug token on the **correct web app**; Application restrictions = None for localhost |
 | `Role 'function' is not supported` | Upgrade to Firebase SDK **12.19.0+** and restart the dev server |

@@ -82,7 +82,7 @@ You need your **own** Firebase project. Follow **[FIREBASE_SETUP.md](./FIREBASE_
 2. Register a **Web app** and copy the `firebaseConfig` object
 3. **AI Logic → Get started → Gemini Developer API** (do this early — provisions APIs and the service agent)
 4. Create a **reCAPTCHA Enterprise** site key (score-based) and register it in **App Check**
-5. Restrict your **Browser API key** to **Firebase AI Logic API** + **Firebase App Check API** only (not Generative Language API)
+5. On the **Browser API key**, confirm **Firebase AI Logic API** and **Firebase App Check API** are allowed — the AI Logic wizard often enables ~25 APIs automatically; verify those two are in the list (not **Gemini API** / `generativelanguage.googleapis.com`)
 
 ---
 
@@ -228,7 +228,7 @@ Before moving on, confirm you can explain each item:
 - [ ] What **AI Logic → Get started** provisions in your Firebase project
 - [ ] Why **App Check** is required for Gemini on the client
 - [ ] Difference between **reCAPTCHA** (production) and **debug tokens** (localhost)
-- [ ] Why the Browser API key allows **Firebase AI Logic** + **App Check** APIs but **not** Generative Language API
+- [ ] Why the Browser key should include **Firebase AI Logic** + **App Check** APIs (often pre-enabled by the wizard) but **not** raw **Gemini API** (`generativelanguage.googleapis.com`)
 - [ ] Where **`provideBytewiseFirebase()`** fits in the Angular injector
 - [ ] How **`shoppingTools`** connects to **`executeShoppingTool()`**
 - [ ] What happens in **`resolveToolCalls()`** when Gemini asks for inventory
