@@ -32,7 +32,8 @@ Angular provides the UI. **Firebase AI Logic** connects your app to **Gemini** t
 
 The AI stack is organized in layers (config → bootstrap → tools → service → UI). For a full walkthrough with diagrams and file references, read:
 
-- **[FIREBASE_AI_ARCHITECTURE.md](./FIREBASE_AI_ARCHITECTURE.md)** — how the code works (start here after setup)
+- **[FIREBASE_AI_LOGIC_ANGULAR_GUIDE.md](./FIREBASE_AI_LOGIC_ANGULAR_GUIDE.md)** — standalone tutorial (Console → first `generateContent()`), Dev.to-ready markdown
+- **[FIREBASE_AI_ARCHITECTURE.md](./FIREBASE_AI_ARCHITECTURE.md)** — how the ByteWise code works (start here after setup)
 - **[FIREBASE_SETUP.md](./FIREBASE_SETUP.md)** — Firebase Console checklist for your own project
 
 ```text
@@ -181,11 +182,11 @@ Use this as a guided tour. Read **[FIREBASE_AI_ARCHITECTURE.md](./FIREBASE_AI_AR
 | File | What to notice |
 |------|----------------|
 | `src/app/app.config.ts` | Calls `provideBytewiseFirebase()` once |
-| `src/app/firebase/providers.ts` | One `initializeApp`, then App Check, then `getAI()` with `GoogleAIBackend` |
+| `src/app/firebase/providers.ts` | One `initializeApp`, then App Check, then `getAI()` with `GoogleAIBackend` (no `@angular/fire`) |
 | `src/app/firebase/app-check.ts` | reCAPTCHA Enterprise vs debug provider vs SSR placeholder |
-| `src/app/firebase/tokens.ts` | `FIREBASE_AI` injection token — services inject this instead of calling `getAI()` directly |
+| `src/app/firebase/tokens.ts` | `FIREBASE_AI`, `FIREBASE_APP_CHECK` — services inject `FIREBASE_AI` instead of calling `getAI()` directly |
 
-**Learning goal:** App Check must initialize on the **same** Firebase app instance before any Gemini call. See `inject(AppCheck)` inside `createFirebaseAI()`.
+**Learning goal:** App Check must initialize on the **same** Firebase app instance before any Gemini call. See `FIREBASE_AI`'s factory `deps: [FIREBASE_APP_CHECK]` in `providers.ts`.
 
 ### Layer 3 — Tools and model
 
@@ -264,7 +265,9 @@ For CI/CD, add a GitHub secret `FIREBASE_SERVICE_ACCOUNT_BYTEWISE` with your pro
 ## Additional Resources
 
 | Resource | Link |
-|----------|------|
+| --- | --- |
+| Angular + AI Logic tutorial (Dev.to source) | [FIREBASE_AI_LOGIC_ANGULAR_GUIDE.md](./FIREBASE_AI_LOGIC_ANGULAR_GUIDE.md) |
+| What changed since Vertex AI in Firebase (Dev.to) | [Vertex AI in Firebase is now Firebase AI Logic](https://dev.to/wayne_gakuo/vertex-ai-in-firebase-is-now-firebase-ai-logic-what-actually-changed-fbb) |
 | Architecture guide (this repo) | [FIREBASE_AI_ARCHITECTURE.md](./FIREBASE_AI_ARCHITECTURE.md) |
 | Firebase setup guide (this repo) | [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) |
 | Firebase AI Logic docs | [firebase.google.com/docs/ai-logic](https://firebase.google.com/docs/ai-logic) |
