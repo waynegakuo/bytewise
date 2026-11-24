@@ -19,7 +19,7 @@ import type { ProductService } from './product.service';
  *
  * @see https://firebase.google.com/docs/ai-logic/models
  */
-export const SHOPPING_AGENT_MODEL = 'gemini-3.8-flash';
+export const SHOPPING_AGENT_MODEL = 'gemini-4-neon';
 
 /**
  * System instruction baked into every chat session.
